@@ -34,7 +34,7 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        //if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
+        if (await UserExists(registerDto.UserName)) return BadRequest("Username is taken");
 
         var user = _mapper.Map<AppUser>(registerDto);
 
@@ -58,55 +58,6 @@ public class AccountController : BaseApiController
 
         return Ok(userDto);
     }
-
-
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ///
-    //[HttpGet]
-    //[AllowAnonymous]
-    //public IActionResult Login()
-    //{
-    //    //if (User.Identity.IsAuthenticated)
-    //    //{
-    //    //    // solo si usuario est[a autenticado
-    //    //    var claims = User.Claims.ToList();
-
-    //    //    var usuarioId = claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
-    //    //    var id = usuarioId.Value;
-    //    //}
-    //    //else
-    //    //{
-    //    //    // si no est[a autenticado
-    //    //}
-
-    //    return View();
-    //}
-
-    //[HttpPost]
-    //[AllowAnonymous]
-    //public async Task<IActionResult> Login(LoginViewModel modelo)
-    //{
-    //    if (!ModelState.IsValid)
-    //    {
-    //        return View(modelo);
-    //    }
-
-    //    // p'q no bloquee la cuenta si falla muchos intentos
-    //    var resultado = await signInManager.PasswordSignInAsync(modelo.Email,
-    //                                        modelo.Password, modelo.Recuerdame, lockoutOnFailure: false);
-
-    //    if (resultado.Succeeded)
-    //    {
-    //        return RedirectToAction("Index", "Transacciones");
-    //    }
-    //    else
-    //    {
-    //        ModelState.AddModelError(string.Empty, "Nombre de usuario o password incorrecto.");
-
-    //        return View(modelo);
-    //    }
-    //}
 
 
     ////////////////////////////////////////////////
@@ -142,8 +93,10 @@ public class AccountController : BaseApiController
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
     //
-    //private async Task<bool> UserExists(string username)
-    //{
-    //    return await _userManager.Users.AnyAsync(u => u.UserName == username.ToLower());
-    //}
+    private async Task<bool> UserExists(string username)
+    {
+        var userInDb = await _userManager.FindByNameAsync(username.ToLower());
+        
+        return userInDb is not null;
+    }
 }

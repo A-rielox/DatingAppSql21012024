@@ -73,7 +73,7 @@ public class AppUserStore : IUserStore<AppUser>,
     ////////////////////////////////////////////////
     ///
     public async Task<AppUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
-    {
+    {// lo va a encontrar = a pesar de no estar normalizado en la DB
         return await _userRepository.GetUserByUserNameAsync(normalizedUserName);
     }
 
