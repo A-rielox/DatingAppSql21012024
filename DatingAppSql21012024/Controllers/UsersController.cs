@@ -2,10 +2,12 @@
 using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingAppSql21012024.Controllers;
 
+[Authorize]
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;

@@ -1,8 +1,12 @@
 using DatingAppSql21012024.Data;
 using DatingAppSql21012024.Entities;
+using DatingAppSql21012024.Extensions;
 using DatingAppSql21012024.Interfaces;
 using DatingAppSql21012024.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,15 +19,14 @@ builder.Services.AddSwaggerGen();
 
 
 
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddAplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
 
 
 
 
+// p'q funcione Identity
 builder.Services.AddScoped<IUserStore<AppUser>, AppUserStore>();
 builder.Services.AddIdentityCore<AppUser>(opciones =>
 {
@@ -33,16 +36,7 @@ builder.Services.AddIdentityCore<AppUser>(opciones =>
     opciones.Password.RequireNonAlphanumeric = false;
 })/*.AddErrorDescriber<MensajesDeErrorIdentity>()*/;
 
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-//    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-//    options.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
-//});
 
-
-
-builder.Services.AddCors();
 
 
 var app = builder.Build();
@@ -63,8 +57,10 @@ app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("ht
 
 
 
-
+app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 app.MapControllers();
 

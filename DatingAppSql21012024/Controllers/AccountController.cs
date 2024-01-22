@@ -2,6 +2,7 @@
 using Dapper;
 using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
+using DatingAppSql21012024.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,13 +18,16 @@ public class AccountController : BaseApiController
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokenService;
 
     public AccountController(UserManager<AppUser> userManager
                              , IMapper mapper
+                             , ITokenService tokenService
         )
     {
         this._userManager = userManager;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
 
@@ -53,7 +57,7 @@ public class AccountController : BaseApiController
             UserName = user.UserName,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            //Token = await _tokenService.CreateToken(user)
+            Token = _tokenService.CreateToken(user)
         };
 
         return Ok(userDto);
@@ -81,7 +85,7 @@ public class AccountController : BaseApiController
             KnownAs = user.KnownAs,
             Gender = user.Gender,
             //PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
-            //Token = await _tokenService.CreateToken(user)
+            Token = _tokenService.CreateToken(user)
         };
 
         return Ok(userDto);
