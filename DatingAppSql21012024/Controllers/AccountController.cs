@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
-using Dapper;
 using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace DatingAppSql21012024.Controllers;
 
@@ -71,7 +64,7 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         //var user = await _userRepository.GetUserByUsernameAsync(loginDto.UserName);
-        var user = await _userManager.FindByNameAsync(loginDto.UserName);
+        var user = await _userManager.FindByNameAsync(loginDto.UserName); // .FindByNameAsync est[a en AppUserStore
 
         if (user == null) return Unauthorized("Invalid Username.");
 

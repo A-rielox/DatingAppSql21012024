@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingAppSql21012024.Controllers;
 
-[Authorize]
+//[Authorize]
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;

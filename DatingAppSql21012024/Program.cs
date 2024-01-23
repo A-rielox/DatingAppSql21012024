@@ -1,19 +1,18 @@
-using DatingAppSql21012024.Data;
+//using DatingAppSql21012024.Data;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Extensions;
-using DatingAppSql21012024.Interfaces;
+//using DatingAppSql21012024.Interfaces;
 using DatingAppSql21012024.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+//using Microsoft.IdentityModel.Tokens;
+//using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

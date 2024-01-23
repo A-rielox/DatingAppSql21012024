@@ -18,7 +18,7 @@ public class UserRepository : IUserRepository
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
-    ///
+    /// LA OCUPO EN AppUserStore
     public async Task<int> CreateUser(AppUser usuario)  // CrearUsuario
     {
         using var connection = new SqlConnection(_connectionString);
@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
     //}
 
     public async Task<AppUser> GetUserByUserNameAsync(string userName)  // BuscarUsuarioPorEmail
-    {
+    {//  LA OCUPO EN AppUserStore
         //AppUser user;
 
         //using (var lists = await db.QueryMultipleAsync("sp_getUserByUserName",
