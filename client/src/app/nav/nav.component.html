@@ -2,9 +2,8 @@
    <div class="container">
       <a class="navbar-brand" routerLink="/">App</a>
 
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="accountService.currentUser$ | async">
-         <!-- *ngIf="accontService.currentUser$ | async" -->
-         <ng-container>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         <ng-container *ngIf="accountService.currentUser$ | async">
             <li class="nav-item">
                <a class="nav-link" routerLink="/members" routerLinkActive="active">Matches</a>
             </li>
@@ -22,8 +21,7 @@
                <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin</a>
             </li> -->
          </ng-container>
-         <!-- 
-         <li class="nav-item">
+         <!-- <li class="nav-item">
             <a class="nav-link" routerLink="/errors" routerLinkActive="active">error</a>
          </li> -->
       </ul>

@@ -8,6 +8,7 @@ import {
    ValidatorFn,
    Validators,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
    selector: 'app-register',
@@ -20,7 +21,8 @@ export class RegisterComponent implements OnInit {
    model: any = {};
 
    constructor(
-      private accountService: AccountService // private toastr: ToastrService
+      private accountService: AccountService,
+      private toastr: ToastrService
    ) {}
 
    ngOnInit(): void {}
@@ -32,7 +34,7 @@ export class RegisterComponent implements OnInit {
          },
          error: (err) => {
             console.log(err);
-            // this.toastr.error(err.error + '  💩');
+            this.toastr.error(err.error + '  💩');
          },
       });
    }
