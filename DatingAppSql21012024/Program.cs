@@ -1,6 +1,7 @@
 //using DatingAppSql21012024.Data;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Extensions;
+using DatingAppSql21012024.Middleware;
 //using DatingAppSql21012024.Interfaces;
 using DatingAppSql21012024.Services;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,6 +40,10 @@ builder.Services.AddIdentityCore<AppUser>(opciones =>
 
 
 var app = builder.Build();
+
+
+// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
