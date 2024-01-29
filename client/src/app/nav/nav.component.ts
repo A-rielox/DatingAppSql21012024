@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
    styleUrls: ['./nav.component.css'],
 })
 export class NavComponent implements OnInit {
-   model: any = { userName: 'pepi', password: 'P@ssw0rd' };
+   model: any = { userName: 'lisa', password: 'P@ssword1' };
 
    constructor(
       public accountService: AccountService,
@@ -25,10 +25,10 @@ export class NavComponent implements OnInit {
             // console.log(res, 'api respuesta');
             this.router.navigateByUrl('/members');
          },
-         error: (err) => {
-            this.toastr.error(err.error);
-            console.log(err);
-         },
+         // error: (err) => {                LO MANEJO EN EL INTERCEPTOR
+         //    this.toastr.error(err.error);
+         //    console.log(err);
+         // },
       });
    }
 
