@@ -1,20 +1,23 @@
-﻿using DatingAppSql21012024.Entities;
+﻿using DatingAppSql21012024.DTOs;
+using DatingAppSql21012024.Entities;
 
 namespace DatingAppSql21012024.Interfaces;
 
 public interface IUserRepository
 {
-    //Task<AppUser> BuscarUsuarioPorEmail(string emailNormalizado); // BuscarUsuarioPorEmail
+    Task<bool> UpdateUserAsync(AppUser user);
+    Task<IEnumerable<AppUser>> GetUsersAsync();
+    Task<AppUser> GetUserByIdAsync(int id);
+    Task<MemberDto> GetUserByUserNameAsync(string username); 
+    Task<AppUser> GetUserByUserNameStoreAsync(string username);  //  LA OCUPO EN AppUserStore - BuscarUsuarioPorEmail
+
+
     Task<int> CreateUser(AppUser usuario); // CrearUsuario
 
 
+    //Task<AppUser> BuscarUsuarioPorEmail(string emailNormalizado); // BuscarUsuarioPorEmail
 
-
-    //Task<bool> UpdateUserAsync(AppUser user);
-    Task<IEnumerable<AppUser>> GetUsersAsync();
     //Task<AppUserPagedList> GetPagedUsersAsync(UserParams userParams); // reemplaza a la de arriba
-    //Task<AppUser> GetUserByIdAsync(int id);
-    Task<AppUser> GetUserByUserNameAsync(string username);  // BuscarUsuarioPorEmail
 
     ////Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
     ////Task<MemberDto> GetMemberAsync(string username);

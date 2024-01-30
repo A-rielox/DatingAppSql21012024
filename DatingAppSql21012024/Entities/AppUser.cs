@@ -5,13 +5,6 @@ public class AppUser
     public int Id { get; set; }
     public string UserName { get; set; }
     public string PasswordHash { get; set; }
-    //public byte[] PasswordSalt { get; set; }
-
-    public string Email => UserName; // el mismo UserName
-    public string NormalizedEmail { get; set; } // el mismo UserName Normalized
-
-
-
     public DateTime DateOfBirth { get; set; } = new DateTime(1901, 01, 01, 00, 00, 00);
     public string KnownAs { get; set; }
     public DateTime Created { get; set; } = DateTime.Now;
@@ -24,6 +17,9 @@ public class AppUser
     public string Country { get; set; }
 
 
+    public string Email => UserName; // el mismo UserName
+    public string NormalizedEmail { get; set; } // el mismo UserName Normalized
 
-    public List<Photo> Photos { get; set; } = new();
+
+    //public List<Photo> Photos { get; set; } = new();
 }

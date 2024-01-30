@@ -7,16 +7,6 @@ public class Photo
     public string Url { get; set; }
     public int IsMain { get; set; }
     public string PublicId { get; set; }
-
-    // p'q ocupe la id del AppUser como foreign-key, y paq la prop AppUserId NO sea nullable ( NO puede
-    // haber fotos q no esten relacionadas a un AppUser )
-    // p' decirle a Dapper que esta prop no es writeable ( esta prop NO va a la tabla )
-    //[Write(false)]
-    //public AppUser AppUser { get; set; }
-    //public int AppUserId { get; set; }    ESTAS 2 LAS PONIA SOLO PARA QUE ENTITYFRAMEWORK
-    //                                      ESTABLESCA LA RELACION
-
-    // esta si es columna en tabla de sql, CHECAR SI LA OCUPO ACA
     public int AppUserId { get; set; }
 }
 

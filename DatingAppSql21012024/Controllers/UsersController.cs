@@ -29,12 +29,12 @@ public class UsersController : BaseApiController
     //////////////////////////////////////////
     /////////////////////////////////////////////
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {// el está usando getMembers
         var users = await _userRepository.GetUsersAsync();
-        var members = _mapper.Map<IEnumerable<MemberDto>>(users);
+        //var members = _mapper.Map<IEnumerable<MemberDto>>(users);
 
-        return Ok(members);
+        return Ok(users);
     }
 
     // CON PAGINACION
@@ -70,11 +70,12 @@ public class UsersController : BaseApiController
     /////////////////////////////////////////////
     //[Authorize(Roles = "Member")]
     [HttpGet("{username}")]
-    public async Task<ActionResult<AppUser>> GetUser(string username)
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {// el está usando getMember
         var user = await _userRepository.GetUserByUserNameAsync(username);
 
         // si no hay con este nombre tengo null
+        if (user is null) return Ok("Este usuario no existe.");
 
         var member = _mapper.Map<MemberDto>(user);
 

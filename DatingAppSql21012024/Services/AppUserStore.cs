@@ -54,7 +54,7 @@ public class AppUserStore : IUserStore<AppUser>,
     ///
     public async Task<AppUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetUserByUserNameAsync(normalizedEmail); // es el mismo UserName
+        return await _userRepository.GetUserByUserNameStoreAsync(normalizedEmail); // es el mismo UserName
     }
 
 
@@ -74,7 +74,7 @@ public class AppUserStore : IUserStore<AppUser>,
     ///
     public async Task<AppUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
     {// lo va a encontrar = a pesar de no estar normalizado en la DB
-        return await _userRepository.GetUserByUserNameAsync(normalizedUserName);
+        return await _userRepository.GetUserByUserNameStoreAsync(normalizedUserName);
     }
 
 

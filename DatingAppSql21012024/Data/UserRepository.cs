@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
+using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
@@ -9,9 +11,12 @@ namespace DatingAppSql21012024.Data;
 public class UserRepository : IUserRepository
 {
     private readonly string _connectionString;
-    public UserRepository(IConfiguration configuration)
+    private readonly IMapper _mapper;
+
+    public UserRepository(IConfiguration configuration, IMapper mapper)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
+        _mapper = mapper;
     }
 
 
@@ -50,6 +55,51 @@ public class UserRepository : IUserRepository
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ///
+    public async Task<bool> UpdateUserAsync(AppUser user)
+    {
+        // si es exitosa me retorna 1 ( la cantidad de cols editadas )
+        var parameters = new DynamicParameters();
+
+        parameters.Add("@userId", user.Id);
+        parameters.Add("@introduction", user.Introduction);
+        parameters.Add("@lookingFor", user.LookingFor);
+        parameters.Add("@interests", user.Interests);
+        parameters.Add("@city", user.City);
+        parameters.Add("@country", user.Country);
+        parameters.Add("@lastActive", user.LastActive);
+
+        using var connection = new SqlConnection(_connectionString);
+
+        var res = await connection.QuerySingleAsync<int>("sp_updateUser",
+                                            parameters,
+                                            commandType: CommandType.StoredProcedure);
+
+        return res == 1 ? true : false;
+
+
+        /* con Dapper Contrib
+         var res = await db.UpdateAsync(user);
+         return res; */
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ///
+    public async Task<AppUser> GetUserByIdAsync(int id)
+    {
+
+        using var connection = new SqlConnection(_connectionString);
+
+        var user = await connection.QuerySingleAsync<AppUser>("sp_getUserById",
+                                    new { userId = id },
+                                    commandType: CommandType.StoredProcedure);
+
+        return user;
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ///
     //public async Task<AppUser> BuscarUsuarioPorEmail(string emailNormalizado) // BuscarUsuarioPorEmail
     //{
     //    using var connection = new SqlConnection(_connectionString);
@@ -62,38 +112,45 @@ public class UserRepository : IUserRepository
     //    return usuario;
     //}
 
-    public async Task<AppUser> GetUserByUserNameAsync(string userName)  // BuscarUsuarioPorEmail
-    {//  LA OCUPO EN AppUserStore
-        //AppUser user;
 
-        //using (var lists = await db.QueryMultipleAsync("sp_getUserByUserName",
-        //                            new { userName = username },
-        //                            commandType: CommandType.StoredProcedure))
-        //{
-        //    user = lists.Read<AppUser>().SingleOrDefault();
-        //    user.Photos = lists.Read<Photo>().ToList();
-        //}
-
-        //return user;
-
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ///     LA OCUPO EN AppUserStore - BuscarUsuarioPorEmail
+    public async Task<AppUser> GetUserByUserNameStoreAsync(string userName)
+    {
+        
         using var connection = new SqlConnection(_connectionString);
 
-        var user = await connection.QuerySingleOrDefaultAsync<AppUser>("sp_getUserByUserName",
+        var user = await connection.QuerySingleOrDefaultAsync<AppUser>("sp_getUserByUserNameStore",
                                                   new { userName = userName },
                                                   commandType: CommandType.StoredProcedure);
 
         return user;
-        
     }
 
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ///
+    public async Task<MemberDto> GetUserByUserNameAsync(string userName)
+    {
+        using var connection = new SqlConnection(_connectionString);
 
+        MemberDto member;
+
+        using (var lists = await connection.QueryMultipleAsync("sp_getUserByUserName",
+                                    new { userName = userName },
+                                    commandType: CommandType.StoredProcedure))
+        {
+            member = _mapper.Map<MemberDto>( lists.Read<AppUser>().SingleOrDefault() );
+            member.Photos = _mapper.Map<List<PhotoDto>>( lists.Read<Photo>().ToList() );
+        }
+
+        return member;
+    }
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ///
-    ///
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
         /*
@@ -115,13 +172,13 @@ public class UserRepository : IUserRepository
 
         return users;
         */
+
+        /*          SIN FOTOS */
         using var connection = new SqlConnection(_connectionString);
 
         var users = await connection.QueryAsync<AppUser>("sp_getAllUsers",
                                     commandType: CommandType.StoredProcedure);
 
-        return users.ToList();
-        
+        return users.ToList();        
     }
-
 }
