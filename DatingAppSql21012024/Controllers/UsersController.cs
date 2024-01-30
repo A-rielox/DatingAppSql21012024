@@ -32,9 +32,9 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {// el está usando getMembers
         var users = await _userRepository.GetUsersAsync();
-        //var members = _mapper.Map<IEnumerable<MemberDto>>(users);
+        var members = _mapper.Map<IEnumerable<MemberDto>>(users);
 
-        return Ok(users);
+        return Ok(members);
     }
 
     // CON PAGINACION

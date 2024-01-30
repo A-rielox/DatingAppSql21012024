@@ -21,5 +21,6 @@ public class AppUser
     public string NormalizedEmail { get; set; } // el mismo UserName Normalized
 
 
-    //public List<Photo> Photos { get; set; } = new();
+    //[Write(false)]
+    public List<Photo> Photos { get; set; } = new();
 }

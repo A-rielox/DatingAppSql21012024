@@ -4,6 +4,7 @@ using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 using System.Data;
 
 namespace DatingAppSql21012024.Data;
@@ -131,21 +132,21 @@ public class UserRepository : IUserRepository
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ///
-    public async Task<MemberDto> GetUserByUserNameAsync(string userName)
+    public async Task<AppUser> GetUserByUserNameAsync(string userName)
     {
         using var connection = new SqlConnection(_connectionString);
-
-        MemberDto member;
+        
+        AppUser user;
 
         using (var lists = await connection.QueryMultipleAsync("sp_getUserByUserName",
                                     new { userName = userName },
                                     commandType: CommandType.StoredProcedure))
         {
-            member = _mapper.Map<MemberDto>( lists.Read<AppUser>().SingleOrDefault() );
-            member.Photos = _mapper.Map<List<PhotoDto>>( lists.Read<Photo>().ToList() );
+            user = lists.Read<AppUser>().SingleOrDefault();
+            user.Photos = lists.Read<Photo>().ToList();
         }
 
-        return member;
+        return user;
     }
 
     ////////////////////////////////////////////////
@@ -153,11 +154,11 @@ public class UserRepository : IUserRepository
     ///
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
-        /*
+        using var connection = new SqlConnection(_connectionString);
         List<AppUser> users;
         List<Photo> photos;
 
-        using (var lists = await db.QueryMultipleAsync("sp_getAllUsersAndPhotos",
+        using (var lists = await connection.QueryMultipleAsync("sp_getAllUsersAndPhotos",
                                     commandType: CommandType.StoredProcedure))
         {
             users = lists.Read<AppUser>().ToList();
@@ -171,14 +172,16 @@ public class UserRepository : IUserRepository
         });
 
         return users;
-        */
+        
 
-        /*          SIN FOTOS */
+
+        /*          SIN FOTOS 
         using var connection = new SqlConnection(_connectionString);
 
         var users = await connection.QueryAsync<AppUser>("sp_getAllUsers",
                                     commandType: CommandType.StoredProcedure);
 
-        return users.ToList();        
+        return users.ToList();
+        */
     }
 }
