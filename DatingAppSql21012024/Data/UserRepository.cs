@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Dapper;
-using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
 using System.Data;
 
 namespace DatingAppSql21012024.Data;
@@ -97,21 +95,6 @@ public class UserRepository : IUserRepository
 
         return user;
     }
-
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ///
-    //public async Task<AppUser> BuscarUsuarioPorEmail(string emailNormalizado) // BuscarUsuarioPorEmail
-    //{
-    //    using var connection = new SqlConnection(_connectionString);
-
-    //    var usuario = await connection.QuerySingleOrDefaultAsync<AppUser>(
-    //                                            @"SELECT * FROM Usuarios
-    //                                              Where EmailNormalizado = @emailNormalizado",
-    //                                            new { emailNormalizado });
-
-    //    return usuario;
-    //}
 
 
     ////////////////////////////////////////////////

@@ -1,5 +1,4 @@
-﻿using DatingAppSql21012024.DTOs;
-using DatingAppSql21012024.Entities;
+﻿using DatingAppSql21012024.Entities;
 
 namespace DatingAppSql21012024.Interfaces;
 

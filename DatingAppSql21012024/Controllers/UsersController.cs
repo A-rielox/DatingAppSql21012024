@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DatingAppSql21012024.DTOs;
-using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
