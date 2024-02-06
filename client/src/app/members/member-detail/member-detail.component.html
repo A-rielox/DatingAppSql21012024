@@ -53,8 +53,7 @@
          <!-- #photoTab="tab" p'el problema que no muestra bien la 1ra -->
          <tab heading="Photos" #photoTab="tab" (selectTab)="onTabActivated($event)">
             <!-- class="gallery" yo la creo -->
-            <!-- <gallery [items]="images" *ngIf="photoTab.active" class="gallery"></gallery> -->
-            galeria
+            <gallery [items]="images" *ngIf="photoTab.active" class="gallery"></gallery>
          </tab>
 
          <tab heading="Messages" (selectTab)="onTabActivated($event)">
