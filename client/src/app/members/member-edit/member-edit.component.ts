@@ -13,6 +13,7 @@ import { MembersService } from 'src/app/_services/members.service';
    styleUrls: ['./member-edit.component.css'],
 })
 export class MemberEditComponent implements OnInit {
+   // | undefined xq al construir el componente puede estar indefinido
    @ViewChild('editForm') editForm: NgForm | undefined;
    member: Member | undefined;
    user: User | null = null;
@@ -44,10 +45,12 @@ export class MemberEditComponent implements OnInit {
    }
 
    updateMember() {
+      console.log(this.member, 'member');
+
       // this.memberService.updateMember(this.editForm?.value).subscribe({
       //    next: () => {
-      //       this.toastr.success('Profile updated successfully');
-      //       this.editForm?.reset(this.member);
+      this.toastr.success('Profile updated successfully');
+      this.editForm?.reset(this.member);
       //    },
       // });
    }

@@ -72,12 +72,14 @@ public class AccountController : BaseApiController
 
         if (!result) return Unauthorized("Invalid Password.");
 
+
+
         var userDto = new UserDto
         {
             UserName = user.UserName,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            //PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
+            PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain == 1)?.Url,
             Token = _tokenService.CreateToken(user)
         };
 

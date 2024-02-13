@@ -3,6 +3,7 @@ using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DatingAppSql21012024.Controllers;
 
@@ -85,25 +86,25 @@ public class UsersController : BaseApiController
     //////////////////////////////////////////////
     /////////////////////////////////////////////////
     // PUT api/Users
-    //[HttpPut]
-    //public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
-    //{
-    //    //var username = User.FindFirst(ClaimTypes.Name)?.Value;
-    //    var username = User.GetUsername();
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+    {
+        var username = User.FindFirst(ClaimTypes.Name)?.Value;
+        //var username = User.GetUsername();
 
-    //    var user = await _userRepository.GetUserByUsernameAsync(username);
+        var user = await _userRepository.GetUserByUserNameAsync(username);
 
-    //    if (user == null) return NotFound();
+        if (user == null) return NotFound();
 
-    //    // lo q esta em memberUpdateDto lo mete a user
-    //    //                |---------->
-    //    _mapper.Map(memberUpdateDto, user);
+        // lo q esta em memberUpdateDto lo mete a user
+        //                |---------->
+        _mapper.Map(memberUpdateDto, user);
 
-    //    // aùn y si no hay cambios me sobreescribe todo
-    //    if (await _userRepository.UpdateUserAsync(user)) return NoContent();
+        // aùn y si no hay cambios me sobreescribe todo
+        if (await _userRepository.UpdateUserAsync(user)) return NoContent();
 
-    //    return BadRequest("Failed to update user.");
-    //}
+        return BadRequest("Failed to update user.");
+    }
 
 
     ////////////////////////////////////////////////
