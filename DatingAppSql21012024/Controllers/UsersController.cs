@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DatingAppSql21012024.DTOs;
+using DatingAppSql21012024.Entities;
+using DatingAppSql21012024.Extensions;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,16 +14,16 @@ public class UsersController : BaseApiController
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-    //private readonly IPhotoService _photoService;
+    private readonly IPhotoService _photoService;
 
     public UsersController(IUserRepository userRepository,
                            IMapper mapper
-                           //, IPhotoService photoService
+                           , IPhotoService photoService
         )
     {
         _userRepository = userRepository;
         _mapper = mapper;
-        //_photoService = photoService;
+        _photoService = photoService;
     }
 
 
@@ -89,8 +91,8 @@ public class UsersController : BaseApiController
     [HttpPut]
     public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
     {
-        var username = User.FindFirst(ClaimTypes.Name)?.Value;
-        //var username = User.GetUsername();
+        //var username = User.FindFirst(ClaimTypes.Name)?.Value;
+        var username = User.GetUsername();
 
         var user = await _userRepository.GetUserByUserNameAsync(username);
 
@@ -110,44 +112,47 @@ public class UsersController : BaseApiController
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
     // POST: api/Users/add-photo
-    //[HttpPost("add-photo")]
-    //public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
-    //{
-    //    // al probar en postman la "key" q mando en el body se debe llamar como le pongo aca
-    //    // el paramatro " File "
+    [HttpPost("add-photo")]
+    public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+    {
+        // al probar en postman la "key" q mando en el body se debe llamar como le pongo aca
+        // el paramatro " File "
 
-    //    var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
-    //    if (user == null) return NotFound();
+        var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+        if (user == null) return NotFound();
 
-    //    var result = await _photoService.AddPhotoAsync(file);
+        var result = await _photoService.AddPhotoAsync(file);
 
-    //    if (result.Error != null) return BadRequest(result.Error.Message);
+        if (result.Error != null) return BadRequest(result.Error.Message);
 
-    //    var photo = new Photo
-    //    {
-    //        Url = result.SecureUrl.AbsoluteUri,
-    //        PublicId = result.PublicId,
-    //        AppUserId = user.Id
-    //    };
+        var photo = new Photo
+        {
+            Url = result.SecureUrl.AbsoluteUri,
+            PublicId = result.PublicId,
+            AppUserId = user.Id
+        };
 
-    //    // si es su primera foto => la pongo como main
-    //    // como estoy checando "user.Photos.Count" tengo que cargar las fotos con "GetUserByUsernameAsync"
-    //    if (user.Photos.Count == 0)
-    //    {
-    //        photo.IsMain = 1;
-    //    }
+        // si es su primera foto => la pongo como main
+        // como estoy checando "user.Photos.Count" tengo que cargar las fotos con "GetUserByUsernameAsync"
+        if (user.Photos.Count == 0)
+        {
+            photo.IsMain = 1;
+        }
 
-    //    var photoId = await _userRepository.AddPhotoAsync(photo);
+        var photoId = await _userRepository.AddPhotoAsync(photo);
 
-    //    if (photoId > 0)
-    //    {
-    //        //return _mapper.Map<PhotoDto>(photo);
-    //        return CreatedAtAction(nameof(GetUser),
-    //                    new { username = user.UserName }, _mapper.Map<PhotoDto>(photo));
-    //    }
+        if (photoId > 0)
+        {
+            var newPhoto = _mapper.Map<PhotoDto>(photo);
+            newPhoto.Id = photoId;
 
-    //    return BadRequest("Problem adding the photo.");
-    //}
+            //return _mapper.Map<PhotoDto>(photo);
+            return CreatedAtAction(nameof(GetUser),
+                        new { username = user.UserName }, newPhoto);
+        }
+
+        return BadRequest("Problem adding the photo.");
+    }
 
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////

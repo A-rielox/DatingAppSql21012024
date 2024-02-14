@@ -1,4 +1,5 @@
 ﻿using DatingAppSql21012024.Data;
+using DatingAppSql21012024.Helpers;
 using DatingAppSql21012024.Interfaces;
 using DatingAppSql21012024.Services;
 
@@ -14,14 +15,10 @@ public static class ApplicationServiceExtensions
         services.AddCors();
 
         services.AddScoped<ITokenService, TokenService>();
-
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
         services.AddScoped<IUserRepository, UserRepository>();
-
-        //services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
-
-        //services.AddScoped<IPhotoService, PhotoService>();
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+        services.AddScoped<IPhotoService, PhotoService>();
 
         //services.AddScoped<LogUserActivity>();
 

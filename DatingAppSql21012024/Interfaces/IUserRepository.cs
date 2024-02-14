@@ -21,7 +21,7 @@ public interface IUserRepository
     ////Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
     ////Task<MemberDto> GetMemberAsync(string username);
 
-    //Task<int> AddPhotoAsync(Photo photo);
+    Task<int> AddPhotoAsync(Photo photo);
     //Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto);
     //Task<bool> DeletePhoto(int id);
 }

@@ -38,9 +38,9 @@ export class MemberDetailComponent implements OnInit {
       this.loadMember();
 
       //          ⚡⚡⚡         carga el member desde el route resolver
-      this.route.data.subscribe({
-         next: (data) => (this.member = data['member']),
-      });
+      // this.route.data.subscribe({
+      //    next: (data) => (this.member = data['member']),
+      // });
 
       // cambia el tab de acuerdo al query param q venga
       this.route.queryParams.subscribe({
