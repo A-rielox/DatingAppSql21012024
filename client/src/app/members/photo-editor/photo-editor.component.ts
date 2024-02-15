@@ -57,16 +57,15 @@ export class PhotoEditorComponent implements OnInit {
    }
 
    deletePhoto(photoId: number) {
-      console.log('del del del');
-      // this.memberService.deletePhoto(photoId).subscribe({
-      //    next: () => {
-      //       if (this.member) {
-      //          this.member.photos = this.member.photos.filter(
-      //             (x) => x.id !== photoId
-      //          );
-      //       }
-      //    },
-      // });
+      this.memberService.deletePhoto(photoId).subscribe({
+         next: () => {
+            if (this.member) {
+               this.member.photos = this.member.photos.filter(
+                  (x) => x.id !== photoId
+               );
+            }
+         },
+      });
    }
 
    // necesito ponerle el token xq este req no va a pasar xel interceptor

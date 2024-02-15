@@ -226,20 +226,22 @@ public class UserRepository : IUserRepository
 
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
-    //public async Task<bool> DeletePhoto(int id)
-    //{
-    //    var res = await db.QueryAsync<int>("sp_deletePhoto",
-    //                                        new { photoId = id },
-    //                                        commandType: CommandType.StoredProcedure);
+    public async Task<bool> DeletePhoto(int id)
+    {
+        using var connection = new SqlConnection(_connectionString);
 
-    //    var querySucc = res.FirstOrDefault();
+        var res = await connection.QueryAsync<int>("sp_deletePhoto",
+                                            new { photoId = id },
+                                            commandType: CommandType.StoredProcedure);
 
-    //    return querySucc == 1 ? true : false;
+        var querySucc = res.FirstOrDefault(); // devuelve @@ROWCOUNT
 
-    //    /* Dapper Contrib
-    //    var res = await db.DeleteAsync(new Photo() { Id = id });
+        return querySucc == 1 ? true : false;
 
-    //    return res;
-    //    */
-    //}
+        /* Dapper Contrib
+        var res = await db.DeleteAsync(new Photo() { Id = id });
+
+        return res;
+        */
+    }
 }

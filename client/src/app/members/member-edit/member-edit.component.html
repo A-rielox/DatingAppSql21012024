@@ -16,8 +16,11 @@
    <!--                 LEFT CARD -->
    <div class="col-4">
       <div class="card">
-         <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.knownAs }}"
-            class="card-img-top img-thumbnail" />
+         <img
+            src="{{ member.photoUrl || './assets/user.png' }}"
+            alt="{{ member.knownAs }}"
+            class="card-img-top img-thumbnail"
+         />
 
          <div class="card-body">
             <div>
@@ -41,7 +44,11 @@
          <div class="card-footer">
             <!-- [disabled]="!editForm.dirty" -->
             <!-- form="editForm" xq el boton esta fuera de la form -->
-            <button type="submit" form="editForm" class="btn btn-success col-12">
+            <button
+               type="submit"
+               form="editForm"
+               class="btn btn-success col-12"
+            >
                Save changes
             </button>
          </div>
@@ -54,22 +61,48 @@
          <tab heading="About {{ member.knownAs }}">
             <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
                <h4 class="mt-2">Description</h4>
-               <textarea class="form-control" rows="6" [(ngModel)]="member.introduction" name="introduction"></textarea>
+               <textarea
+                  class="form-control"
+                  rows="6"
+                  [(ngModel)]="member.introduction"
+                  name="introduction"
+               ></textarea>
 
                <h4 class="mt-2">Looking for</h4>
-               <textarea class="form-control" rows="6" [(ngModel)]="member.lookingFor" name="lookingFor"></textarea>
+               <textarea
+                  class="form-control"
+                  rows="6"
+                  [(ngModel)]="member.lookingFor"
+                  name="lookingFor"
+               ></textarea>
 
                <h4 class="mt-2">Interests</h4>
-               <textarea class="form-control" rows="6" [(ngModel)]="member.interests" name="interests"></textarea>
+               <textarea
+                  class="form-control"
+                  rows="6"
+                  [(ngModel)]="member.interests"
+                  name="interests"
+               ></textarea>
 
                <h4 class="mt-2">Location Details:</h4>
                <div class="d-flex flex-row align-items-center">
                   <label for="city">City: </label>
-                  <input type="text" id="city" class="form-control mx-2" [(ngModel)]="member.city" name="city" />
+                  <input
+                     type="text"
+                     id="city"
+                     class="form-control mx-2"
+                     [(ngModel)]="member.city"
+                     name="city"
+                  />
 
                   <label for="country">Country: </label>
-                  <input type="text" id="country" class=" form-control mx-2" [(ngModel)]="member.country"
-                     name="country" />
+                  <input
+                     type="text"
+                     id="country"
+                     class="form-control mx-2"
+                     [(ngModel)]="member.country"
+                     name="country"
+                  />
                </div>
             </form>
          </tab>

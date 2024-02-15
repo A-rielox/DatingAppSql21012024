@@ -2,8 +2,11 @@
 <div class="row" *ngIf="member">
    <div class="col-4">
       <div class="card">
-         <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.knownAs }}"
-            class="card-img-top img-thumbnail" />
+         <img
+            src="{{ member.photoUrl || './assets/user.png' }}"
+            alt="{{ member.knownAs }}"
+            class="card-img-top img-thumbnail"
+         />
 
          <div class="card-body">
             <div>
@@ -38,7 +41,10 @@
 
    <div class="col-8">
       <tabset class="member-tabset" #memberTabs>
-         <tab heading="About {{ member.knownAs }}" (selectTab)="onTabActivated($event)">
+         <tab
+            heading="About {{ member.knownAs }}"
+            (selectTab)="onTabActivated($event)"
+         >
             <h4>Description</h4>
             <p>{{ member.introduction }}</p>
             <h4>Looking for</h4>
@@ -51,9 +57,17 @@
          </tab>
 
          <!-- #photoTab="tab" p'el problema que no muestra bien la 1ra -->
-         <tab heading="Photos" #photoTab="tab" (selectTab)="onTabActivated($event)">
+         <tab
+            heading="Photos"
+            #photoTab="tab"
+            (selectTab)="onTabActivated($event)"
+         >
             <!-- class="gallery" yo la creo -->
-            <gallery [items]="images" *ngIf="photoTab.active" class="gallery"></gallery>
+            <gallery
+               [items]="images"
+               *ngIf="photoTab.active"
+               class="gallery"
+            ></gallery>
          </tab>
 
          <tab heading="Messages" (selectTab)="onTabActivated($event)">

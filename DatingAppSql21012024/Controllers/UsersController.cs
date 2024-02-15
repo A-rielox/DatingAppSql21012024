@@ -183,27 +183,28 @@ public class UsersController : BaseApiController
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
     // DELETE: api/Users/delete-photo/{photoId}
-    //[HttpDelete("delete-photo/{photoId}")]
-    //public async Task<ActionResult> DeletePhoto(int photoId)
-    //{
-    //    // saco el usernane del token
-    //    var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+    [HttpDelete("delete-photo/{photoId}")]
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
+        // user con fotos
+        var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
 
-    //    var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
+        var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
 
-    //    if (photo == null) return NotFound();
+        if (photo == null) return NotFound();
 
-    //    if (photo.IsMain == 1) return BadRequest("You can not delete your main photo.");
+        if (photo.IsMain == 1) return BadRequest("You can not delete your main photo.");
 
-    //    // si esta en cloudinary => tiene una publicId
-    //    if (photo.PublicId != null)
-    //    {
-    //        var result = await _photoService.DeletePhotoAsync(photo.PublicId);
-    //        if (result.Error != null) return BadRequest(result.Error.Message);
-    //    }
+        // si esta en cloudinary => tiene una publicId, las otras son del seed inicial
+        if (photo.PublicId != null)
+        {
+            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
 
-    //    if (await _userRepository.DeletePhoto(photo.Id)) return Ok();
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
 
-    //    return BadRequest("Failed to delete the photo.");
-    //}
+        if (await _userRepository.DeletePhoto(photo.Id)) return Ok();
+
+        return BadRequest("Failed to delete the photo.");
+    }
 }
