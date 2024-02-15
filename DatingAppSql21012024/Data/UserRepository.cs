@@ -2,6 +2,7 @@
 using CloudinaryDotNet;
 using Dapper;
 using DatingAppSql21012024.Entities;
+using DatingAppSql21012024.Helpers;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -195,22 +196,24 @@ public class UserRepository : IUserRepository
 
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
-    //public async Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto)
-    //{
-    //    // si es exitosa me retorna 2 ( la cantidad de cols editadas )
-    //    var parameters = new DynamicParameters();
+    public async Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto)
+    {
+        using var connection = new SqlConnection(_connectionString);
 
-    //    parameters.Add("@oldMainId", setMainPhoto.oldMainId);
-    //    parameters.Add("@newMainId", setMainPhoto.newMainId);
+        // si es exitosa me retorna 2 ( la cantidad de cols editadas )
+        var parameters = new DynamicParameters();
 
-    //    var res = await db.QueryAsync<int>("sp_setMainPhoto",
-    //                                        parameters,
-    //                                        commandType: CommandType.StoredProcedure);
+        parameters.Add("@oldMainId", setMainPhoto.oldMainId);
+        parameters.Add("@newMainId", setMainPhoto.newMainId);
 
-    //    var querySucc = res.FirstOrDefault();
+        var res = await connection.QueryAsync<int>("sp_setMainPhoto",
+                                                    parameters,
+                                                    commandType: CommandType.StoredProcedure);
 
-    //    return querySucc == 2 ? true : false;
-    //}
+        var querySucc = res.FirstOrDefault();
+
+        return querySucc == 2 ? true : false;
+    }
 
     /* ANTIGUO
         public async Task<bool> UpdatePhotos(List<Photo> photos)

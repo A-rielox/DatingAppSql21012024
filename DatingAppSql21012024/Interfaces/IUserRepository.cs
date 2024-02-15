@@ -1,4 +1,5 @@
 ﻿using DatingAppSql21012024.Entities;
+using DatingAppSql21012024.Helpers;
 
 namespace DatingAppSql21012024.Interfaces;
 
@@ -22,8 +23,8 @@ public interface IUserRepository
     ////Task<MemberDto> GetMemberAsync(string username);
 
     Task<int> AddPhotoAsync(Photo photo);
-    //Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto);
-    //Task<bool> DeletePhoto(int id);
+    Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto);
+    Task<bool> DeletePhoto(int id);
 }
 
 // ANTIGUO

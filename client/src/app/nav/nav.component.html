@@ -27,8 +27,7 @@
       </ul>
 
       <div class="nav-item dropdown" dropdown *ngIf="(accountService.currentUser$ | async) as user">
-         <!-- src="{{user.photoUrl || './assets/user.png'}}" -->
-         <img src="{{'./assets/user.png'}}" alt="user photo">
+         <img src="{{user.photoUrl || './assets/user.png'}}" alt="user photo">
 
          <!-- {{user.knownAs | titlecase}} -->
          <a class="dropdown-toggle text-decoration-none text-dark ms-1" role="button" dropdownToggle>

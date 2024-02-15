@@ -2,6 +2,7 @@
 using DatingAppSql21012024.DTOs;
 using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Extensions;
+using DatingAppSql21012024.Helpers;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -157,55 +158,27 @@ public class UsersController : BaseApiController
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
     // PUT: api/Users/set-main-photo/{photoId}
-    //[HttpPut("set-main-photo/{photoId}")]
-    //public async Task<ActionResult> SetMainPhoto(int photoId)
-    //{
-    //    var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+    [HttpPut("set-main-photo/{photoId}")]
+    public async Task<ActionResult> SetMainPhoto(int photoId)
+    {
+        var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
 
-    //    if (user == null) return NotFound();
+        if (user == null) return NotFound();
 
-    //    var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
+        var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
 
-    //    if (photo == null) return NotFound();
+        if (photo == null) return NotFound();
 
-    //    if (photo.IsMain == 1) return BadRequest("This is already your main photo.");
+        if (photo.IsMain == 1) return BadRequest("This is already your main photo.");
 
-    //    var currentMain = user.Photos.FirstOrDefault(p => p.IsMain == 1);
+        var currentMain = user.Photos.FirstOrDefault(p => p.IsMain == 1);
 
-    //    var obj = new SetMainPhoto(currentMain.Id, photoId);
+        var obj = new SetMainPhoto(currentMain.Id, photoId);
 
-    //    if (await _userRepository.UpdatePhotos(obj)) return NoContent();
+        if (await _userRepository.UpdatePhotos(obj)) return NoContent();
 
-    //    return BadRequest("Problem setting the main photo");
-
-    //    /* EL ANTIGUO
-    //    var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
-
-    //    if (user == null) return NotFound();
-
-    //    var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
-
-    //    if (photo == null) return NotFound();
-
-    //    if (photo.IsMain == 1) return BadRequest("This is already your main photo.");
-
-    //    var currentMain = user.Photos.FirstOrDefault(p => p.IsMain == 1);
-
-    //    if (currentMain != null) currentMain.IsMain = 0;
-
-    //    photo.IsMain = 1;
-    //    // tengo q actualizar las 2 fotos ( la nueva y la vieja mail )
-    //    List<Photo> photoList = new()
-    //    {
-    //        photo,
-    //        currentMain
-    //    };
-
-    //    if (await _userRepository.UpdatePhotos(photoList)) return NoContent();
-
-    //    return BadRequest("Problem setting the main photo");
-    //    */
-    //}
+        return BadRequest("Problem setting the main photo");
+    }
 
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
