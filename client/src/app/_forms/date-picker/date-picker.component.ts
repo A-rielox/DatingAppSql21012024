@@ -12,6 +12,7 @@ export class DatePickerComponent implements ControlValueAccessor {
    @Input() maxDate: Date | undefined;
    // Partial p'q c/ prop dentro de BsDatepickerConfig sea opcional
    bsConfig: Partial<BsDatepickerConfig> | undefined;
+   id = Math.random();
 
    constructor(@Self() public ngControl: NgControl) {
       this.ngControl.valueAccessor = this;

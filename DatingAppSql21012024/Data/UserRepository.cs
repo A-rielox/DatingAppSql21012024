@@ -104,7 +104,7 @@ public class UserRepository : IUserRepository
     ///     LA OCUPO EN AppUserStore - BuscarUsuarioPorEmail
     public async Task<AppUser> GetUserByUserNameStoreAsync(string userName)
     {
-        
+
         using var connection = new SqlConnection(_connectionString);
 
         var user = await connection.QuerySingleOrDefaultAsync<AppUser>("sp_getUserByUserNameStore",
@@ -120,7 +120,7 @@ public class UserRepository : IUserRepository
     public async Task<AppUser> GetUserByUserNameAsync(string userName)
     {
         using var connection = new SqlConnection(_connectionString);
-        
+
         AppUser user;
 
         using (var lists = await connection.QueryMultipleAsync("sp_getUserByUserName",
@@ -128,7 +128,13 @@ public class UserRepository : IUserRepository
                                     commandType: CommandType.StoredProcedure))
         {
             user = lists.Read<AppUser>().SingleOrDefault();
-            user.Photos = lists.Read<Photo>().ToList();
+            if (user is not null)
+            {
+                if (user.Photos.Count > 0)
+                {
+                    user.Photos = lists.Read<Photo>().ToList();
+                }
+            }
         }
 
         return user;
@@ -157,7 +163,7 @@ public class UserRepository : IUserRepository
         });
 
         return users;
-        
+
 
 
         /*          SIN FOTOS 

@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 export class RegisterComponent implements OnInit {
    @Output() cancelRegister = new EventEmitter();
    @Input() usersFromHomeComp: any;
-   model: any = {};
+   // model: any = {};
    registerForm: FormGroup = new FormGroup({});
    maxDate: Date = new Date(); // inicializa con fecha y hora actual
    validationErrors: string[] | undefined;
@@ -68,16 +68,19 @@ export class RegisterComponent implements OnInit {
    }
 
    register() {
-      console.log(this.registerForm.value);
-      // this.accountService.register(this.model).subscribe({
-      //    next: (res) => {
-      //       this.cancel(); // cierro el register form
-      //    },
-      //    error: (err) => {
-      //       console.log(err);
-      //       this.toastr.error(err.error + '  💩');
-      //    },
-      // });
+      this.registerForm.value.dateOfBirth = this.getDateOnly(
+         this.registerForm.value.dateOfBirth
+      );
+
+      this.accountService.register(this.registerForm.value).subscribe({
+         next: (res) => {
+            this.router.navigateByUrl('/members');
+         },
+         error: (err) => {
+            // este es el q me manda el interceptor con el array validation error, el case 400 ... throw modalStateErrors.flat();
+            this.validationErrors = err;
+         },
+      });
    }
 
    cancel() {

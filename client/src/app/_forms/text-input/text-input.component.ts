@@ -9,6 +9,7 @@ import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 export class TextInputComponent implements ControlValueAccessor {
    @Input() label = '';
    @Input() type = 'text';
+   id = Math.random();
 
    // de esta forma tenemos acceso al control dentro DE ESTE componente ( cuando lo use dentro de las form desde las que lo voy a llamar )
    constructor(@Self() public ngControl: NgControl) {

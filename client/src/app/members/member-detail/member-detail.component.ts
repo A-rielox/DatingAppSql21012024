@@ -49,7 +49,7 @@ export class MemberDetailComponent implements OnInit {
          },
       });
 
-      this.getImages();
+      // this.getImages();
    }
 
    /*                   estoy usando route resolver p' cargar el member */
