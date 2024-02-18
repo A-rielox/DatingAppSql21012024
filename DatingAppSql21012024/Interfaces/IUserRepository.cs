@@ -7,6 +7,7 @@ public interface IUserRepository
 {
     Task<bool> UpdateUserAsync(AppUser user);
     Task<IEnumerable<AppUser>> GetUsersAsync();
+    Task<AppUserPagedList> GetPagedUsersAsync(UserParams userParams); // reemplaza a la de arriba
     Task<AppUser> GetUserByIdAsync(int id);
     Task<AppUser> GetUserByUserNameAsync(string username); 
     Task<AppUser> GetUserByUserNameStoreAsync(string username);  //  LA OCUPO EN AppUserStore - BuscarUsuarioPorEmail

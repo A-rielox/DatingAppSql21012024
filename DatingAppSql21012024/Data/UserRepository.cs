@@ -11,12 +11,12 @@ namespace DatingAppSql21012024.Data;
 
 public class UserRepository : IUserRepository
 {
-    private readonly string _connectionString;
+    private IDbConnection db;
     private readonly IMapper _mapper;
 
     public UserRepository(IConfiguration configuration, IMapper mapper)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
+        this.db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         _mapper = mapper;
     }
 
@@ -27,9 +27,7 @@ public class UserRepository : IUserRepository
     /// LA OCUPO EN AppUserStore
     public async Task<int> CreateUser(AppUser usuario)  // CrearUsuario
     {
-        using var connection = new SqlConnection(_connectionString);
-
-        var usuarioId = await connection.QuerySingleAsync<int>(@"
+        var usuarioId = await db.QuerySingleAsync<int>(@"
                                         INSERT INTO dbo.AppUsers 
 	                                        (
 		                                        userName, knownAs, gender, 
@@ -69,9 +67,7 @@ public class UserRepository : IUserRepository
         parameters.Add("@country", user.Country);
         parameters.Add("@lastActive", user.LastActive);
 
-        using var connection = new SqlConnection(_connectionString);
-
-        var res = await connection.QuerySingleAsync<int>("sp_updateUser",
+        var res = await db.QuerySingleAsync<int>("sp_updateUser",
                                             parameters,
                                             commandType: CommandType.StoredProcedure);
 
@@ -88,10 +84,7 @@ public class UserRepository : IUserRepository
     ///
     public async Task<AppUser> GetUserByIdAsync(int id)
     {
-
-        using var connection = new SqlConnection(_connectionString);
-
-        var user = await connection.QuerySingleAsync<AppUser>("sp_getUserById",
+        var user = await db.QuerySingleAsync<AppUser>("sp_getUserById",
                                     new { userId = id },
                                     commandType: CommandType.StoredProcedure);
 
@@ -104,10 +97,7 @@ public class UserRepository : IUserRepository
     ///     LA OCUPO EN AppUserStore - BuscarUsuarioPorEmail
     public async Task<AppUser> GetUserByUserNameStoreAsync(string userName)
     {
-
-        using var connection = new SqlConnection(_connectionString);
-
-        var user = await connection.QuerySingleOrDefaultAsync<AppUser>("sp_getUserByUserNameStore",
+        var user = await db.QuerySingleOrDefaultAsync<AppUser>("sp_getUserByUserNameStore",
                                                   new { userName = userName },
                                                   commandType: CommandType.StoredProcedure);
 
@@ -119,11 +109,9 @@ public class UserRepository : IUserRepository
     ///
     public async Task<AppUser> GetUserByUserNameAsync(string userName)
     {
-        using var connection = new SqlConnection(_connectionString);
-
         AppUser user;
 
-        using (var lists = await connection.QueryMultipleAsync("sp_getUserByUserName",
+        using (var lists = await db.QueryMultipleAsync("sp_getUserByUserName",
                                     new { userName = userName },
                                     commandType: CommandType.StoredProcedure))
         {
@@ -145,11 +133,10 @@ public class UserRepository : IUserRepository
     ///
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
-        using var connection = new SqlConnection(_connectionString);
         List<AppUser> users;
         List<Photo> photos;
 
-        using (var lists = await connection.QueryMultipleAsync("sp_getAllUsersAndPhotos",
+        using (var lists = await db.QueryMultipleAsync("sp_getAllUsersAndPhotos",
                                     commandType: CommandType.StoredProcedure))
         {
             users = lists.Read<AppUser>().ToList();
@@ -176,6 +163,17 @@ public class UserRepository : IUserRepository
         */
     }
 
+
+    public async Task<AppUserPagedList> GetPagedUsersAsync(UserParams userParams)
+    { // a cambio de GetMembersAsync
+        var pagedResult = await AppUserPagedList.CreateAsync(db, userParams.PageNumber, userParams.PageSize,
+                                                             userParams.CurrentUsername, userParams.Gender,
+                                                             userParams.MinAge, userParams.MaxAge,
+                                                             userParams.OrderBy);
+
+        return pagedResult;
+    }
+
     //////////////////////////////////////////////////////////////////
     //              PHOTOS
 
@@ -183,8 +181,6 @@ public class UserRepository : IUserRepository
     ///////////////////////////////////////////////////
     public async Task<int> AddPhotoAsync(Photo photo)
     {
-        using var connection = new SqlConnection(_connectionString);
-
         // si es exitosa me retorna 1 ( la cantidad de cols editadas )
         var parameters = new DynamicParameters();
 
@@ -194,7 +190,7 @@ public class UserRepository : IUserRepository
         parameters.Add("@isMain", photo.IsMain);
 
         // retorna SCOPE_IDENTITY
-        var res = await connection.QuerySingleAsync<int>("sp_addPhoto",
+        var res = await db.QuerySingleAsync<int>("sp_addPhoto",
                                             parameters,
                                             commandType: CommandType.StoredProcedure);
         return res;
@@ -204,15 +200,13 @@ public class UserRepository : IUserRepository
     ///////////////////////////////////////////////////
     public async Task<bool> UpdatePhotos(SetMainPhoto setMainPhoto)
     {
-        using var connection = new SqlConnection(_connectionString);
-
         // si es exitosa me retorna 2 ( la cantidad de cols editadas )
         var parameters = new DynamicParameters();
 
         parameters.Add("@oldMainId", setMainPhoto.oldMainId);
         parameters.Add("@newMainId", setMainPhoto.newMainId);
 
-        var res = await connection.QueryAsync<int>("sp_setMainPhoto",
+        var res = await db.QueryAsync<int>("sp_setMainPhoto",
                                                     parameters,
                                                     commandType: CommandType.StoredProcedure);
 
@@ -234,9 +228,7 @@ public class UserRepository : IUserRepository
     ///////////////////////////////////////////////////
     public async Task<bool> DeletePhoto(int id)
     {
-        using var connection = new SqlConnection(_connectionString);
-
-        var res = await connection.QueryAsync<int>("sp_deletePhoto",
+        var res = await db.QueryAsync<int>("sp_deletePhoto",
                                             new { photoId = id },
                                             commandType: CommandType.StoredProcedure);
 

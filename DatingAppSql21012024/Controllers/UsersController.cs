@@ -42,31 +42,29 @@ public class UsersController : BaseApiController
 
     // CON PAGINACION
     //[Authorize(Roles = "Admin")]
-    //[HttpGet]
-    //public async Task<ActionResult<AppUserPagedList>> GetUsers([FromQuery] UserParams userParams)
-    //{// el está usando getMembers
-    //    var currentUser = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+    [HttpGet]
+    public async Task<ActionResult<AppUserPagedList>> GetUsers([FromQuery] UserParams userParams)
+    {// el está usando getMembers
+        var currentUser = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
 
-    //    // p'q no me mande a mi en la lista de usuarios
-    //    userParams.CurrentUsername = currentUser.UserName;
+        // p'q no me mande a mi en la lista de usuarios
+        userParams.CurrentUsername = currentUser.UserName;
 
-    //    // p'q xdefault me mande el sexo opuesto
-    //    if (string.IsNullOrEmpty(userParams.Gender))
-    //    {
-    //        userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
-    //    }
+        // p'q xdefault me mande el sexo opuesto
+        if (string.IsNullOrEmpty(userParams.Gender))
+        {
+            userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+        }
 
+        AppUserPagedList users = await _userRepository.GetPagedUsersAsync(userParams);
 
+        var members = _mapper.Map<IEnumerable<MemberDto>>(users);
 
-    //    AppUserPagedList users = await _userRepository.GetPagedUsersAsync(userParams);
+        Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
+                                                          users.TotalCount, users.TotalPages));
 
-    //    var members = _mapper.Map<IEnumerable<MemberDto>>(users);
-
-    //    Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
-    //                                                      users.TotalCount, users.TotalPages));
-
-    //    return Ok(members);
-    //}
+        return Ok(members);
+    }
 
 
     //////////////////////////////////////////
