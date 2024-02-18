@@ -31,14 +31,14 @@ public class UsersController : BaseApiController
 
     //////////////////////////////////////////
     /////////////////////////////////////////////
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
-    {// el está usando getMembers
-        var users = await _userRepository.GetUsersAsync();
-        var members = _mapper.Map<IEnumerable<MemberDto>>(users);
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    //{// el está usando getMembers
+    //    var users = await _userRepository.GetUsersAsync();
+    //    var members = _mapper.Map<IEnumerable<MemberDto>>(users);
 
-        return Ok(members);
-    }
+    //    return Ok(members);
+    //}
 
     // CON PAGINACION
     //[Authorize(Roles = "Admin")]
