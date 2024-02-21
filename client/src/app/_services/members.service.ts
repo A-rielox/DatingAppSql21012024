@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
 import { User } from '../_models/user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, of } from 'rxjs';
+import { PaginatedResult } from '../_models/pagination';
+import { UserParams } from '../_models/userParams';
 
 @Injectable({
    providedIn: 'root',
@@ -18,16 +20,30 @@ export class MembersService {
 
    constructor(private http: HttpClient) {}
 
-   getMembers() {
-      if (this.members.length > 0) return of(this.members);
+   // getMembers() {       -------> SIN PAGINAR
+   //    if (this.members.length > 0) return of(this.members);
 
-      return this.http.get<Member[]>(this.baseUrl + 'users').pipe(
-         map((res) => {
-            this.members = res;
+   //    return this.http.get<Member[]>(this.baseUrl + 'users').pipe(
+   //       map((res) => {
+   //          this.members = res;
 
-            return res;
-         })
+   //          return res;
+   //       })
+   //    );
+   // }
+   getMembers(userParams: UserParams) {
+      let params = this.getPaginationHeaders(
+         userParams.pageNumber,
+         userParams.pageSize
       );
+
+      params = params.append('minAge', userParams.minAge);
+      params = params.append('maxAge', userParams.maxAge);
+      params = params.append('gender', userParams.gender);
+      params = params.append('orderBy', userParams.orderBy);
+
+      // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
+      return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params);
    }
 
    getMember(userName: string) {
@@ -47,6 +63,9 @@ export class MembersService {
       );
    }
 
+   //////////////////////////////////////////////
+   //////////////////////////////////////////////
+   //          FOTOS
    setMainPhoto(photoId: number) {
       return this.http.put(
          this.baseUrl + 'users/set-main-photo/' + photoId,
@@ -56,5 +75,39 @@ export class MembersService {
 
    deletePhoto(photoId: number) {
       return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+   }
+
+   //////////////////////////////////////////////
+   //////////////////////////////////////////////
+   //          PAGINACION
+   private getPaginationHeaders(pageNumber: number, pageSize: number) {
+      // p' poner query string parameters
+      let params = new HttpParams();
+
+      params = params.append('pageNumber', pageNumber);
+      params = params.append('pageSize', pageSize);
+
+      return params;
+   }
+
+   private getPaginatedResult<T>(url: string, params: HttpParams) {
+      const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
+
+      // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
+      return this.http.get<T>(url, { observe: 'response', params }).pipe(
+         map((res) => {
+            if (res.body) {
+               paginatedResult.result = res.body;
+            }
+
+            const pagination = res.headers.get('Pagination');
+
+            if (pagination) {
+               paginatedResult.pagination = JSON.parse(pagination);
+            }
+
+            return paginatedResult;
+         })
+      );
    }
 }
