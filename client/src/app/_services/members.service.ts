@@ -3,9 +3,10 @@ import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
 import { User } from '../_models/user';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, of } from 'rxjs';
+import { map, of, take } from 'rxjs';
 import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
+import { AccountService } from './account.service';
 
 @Injectable({
    providedIn: 'root',
@@ -13,12 +14,20 @@ import { UserParams } from '../_models/userParams';
 export class MembersService {
    baseUrl = environment.apiUrl;
    members: Member[] = [];
+   userParams: UserParams | undefined;
+   user: User | undefined;
    memberCache = new Map();
 
-   user: User | undefined;
-   // userParams: UserParams | undefined;
-
-   constructor(private http: HttpClient) {}
+   constructor(private http: HttpClient, accountService: AccountService) {
+      accountService.currentUser$.pipe(take(1)).subscribe({
+         next: (user) => {
+            if (user) {
+               this.userParams = new UserParams(user);
+               this.user = user;
+            }
+         },
+      });
+   }
 
    // getMembers() {       -------> SIN PAGINAR
    //    if (this.members.length > 0) return of(this.members);
@@ -32,6 +41,12 @@ export class MembersService {
    //    );
    // }
    getMembers(userParams: UserParams) {
+      const response = this.memberCache.get(
+         Object.values(userParams).join('-')
+      );
+
+      if (response) return of(response);
+
       let params = this.getPaginationHeaders(
          userParams.pageNumber,
          userParams.pageSize
@@ -43,11 +58,25 @@ export class MembersService {
       params = params.append('orderBy', userParams.orderBy);
 
       // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
-      return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params);
+      return this.getPaginatedResult<Member[]>(
+         this.baseUrl + 'users',
+         params
+      ).pipe(
+         map((res) => {
+            this.memberCache.set(Object.values(userParams).join('-'), res);
+
+            return res;
+         })
+      );
    }
 
    getMember(userName: string) {
-      const member = this.members.find((m) => m.userName === userName);
+      const member = [...this.memberCache.values()]
+         .reduce((t, i) => {
+            return t.concat(i.result);
+         }, [])
+         .find((member: Member) => member.userName === userName);
+
       if (member) return of(member);
 
       return this.http.get<Member>(this.baseUrl + 'users/' + userName);
@@ -61,6 +90,27 @@ export class MembersService {
             this.members[index] = { ...this.members[index], ...member };
          })
       );
+   }
+
+   //////////////////////////////////////
+   //////////     PARAMS
+   //////////////////////////////////////
+   getUserParams() {
+      return this.userParams;
+   }
+
+   setUserParams(params: UserParams) {
+      this.userParams = params;
+   }
+
+   resetUserParams() {
+      if (this.user) {
+         this.userParams = new UserParams(this.user);
+
+         return this.userParams;
+      }
+
+      return;
    }
 
    //////////////////////////////////////////////

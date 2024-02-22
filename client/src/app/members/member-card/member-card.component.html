@@ -1,10 +1,17 @@
 <div class="card mb-4" *ngIf="member">
    <div class="card-img-wrapper">
-      <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.knownAs }}" class="card-img-top" />
+      <img
+         src="{{ member.photoUrl || './assets/user.png' }}"
+         alt="{{ member.knownAs }}"
+         class="card-img-top"
+      />
 
       <ul class="list-inline member-icons animate text-center">
          <li class="list-inline-item">
-            <button routerLink="/members/{{ member.userName }}" class="btn btn-primary">
+            <button
+               routerLink="/members/{{ member.userName }}"
+               class="btn btn-primary"
+            >
                <i class="fa fa-user"></i>
             </button>
          </li>
@@ -16,8 +23,11 @@
          </li>
 
          <li class="list-inline-item">
-            <button routerLink="/members/{{ member.userName }}" [queryParams]="{ tab: 'Messages' }"
-               class="btn btn-primary">
+            <button
+               routerLink="/members/{{ member.userName }}"
+               [queryParams]="{ tab: 'Messages' }"
+               class="btn btn-primary"
+            >
                <i class="fa fa-envelope"></i>
             </button>
          </li>
@@ -31,7 +41,11 @@
       </h6>
 
       <p class="card-text text-muted text-center">{{ member.city }}</p>
-      <p class="card-text text-muted text-center">created: {{member.created | date}}</p>
-      <p class="card-text text-muted text-center">lastActive: {{member.lastActive | date}}</p>
+      <p class="card-text text-muted text-center">
+         <b>Created:</b> {{ member.created | date }}
+      </p>
+      <p class="card-text text-muted text-center">
+         <b>Last Active:</b> {{ member.lastActive | date }}
+      </p>
    </div>
 </div>
