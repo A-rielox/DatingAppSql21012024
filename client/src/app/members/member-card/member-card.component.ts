@@ -19,11 +19,10 @@ export class MemberCardComponent implements OnInit {
    ngOnInit(): void {}
 
    addLike(member: Member) {
-      //    this.memberService.addLike(member.userName).subscribe({
-      //       next: () => {
-      //          this.toastr.success('You have liked ' + member.knownAs);
-      //       },
-      //    });
-      console.log('add like');
+      this.memberService.addLike(member.userName).subscribe({
+         next: () => {
+            this.toastr.success('You have liked ' + member.knownAs);
+         },
+      });
    }
 }

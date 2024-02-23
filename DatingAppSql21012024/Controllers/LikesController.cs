@@ -24,7 +24,9 @@ public class LikesController : BaseApiController
     [HttpPost("{username}")] // a quien se le da el like
     public async Task<ActionResult> AddLike(string username)
     {
-        var likedUser = await _userRepository.GetUserByUserNameAsync(username);
+        var likedUser = await _userRepository.GetUserByUserNameAsync(username); // me trae fotos, ver
+            // si puedo cambiar el en front q mande el id en lugar del name p' ocupar GetUserByIdAsync
+            // q no trae fotos
 
         var sourceUserId = User.GetUserId(); // el que da el like
         var sourceUser = await _userRepository.GetUserByIdAsync(sourceUserId); // sin fotos
@@ -36,16 +38,6 @@ public class LikesController : BaseApiController
         var userLike = await _likesRepository.GetUserLike(sourceUserId, likedUser.Id);
 
         if (userLike != null) return BadRequest("You already like this user.");
-
-        //userLike = new UserLike
-        //{
-        //    SourceUserId = sourceUserId,
-        //    TargetUserId = likedUser.Id,
-        //};
-
-        //sourceUser.LikedUsers.Add(userLike); // aqui crea la entrada en la tabla UserLike
-
-        //if (await _uow.Complete()) return Ok(); // el saveAllAsync
 
         if (await _likesRepository.AddLike(sourceUserId, likedUser.Id)) return Ok();
 

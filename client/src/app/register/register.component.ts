@@ -1,13 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AccountService } from '../_services/account.service';
-import { User } from '../_models/user';
-import {
-   AbstractControl,
-   FormBuilder,
-   FormGroup,
-   ValidatorFn,
-   Validators,
-} from '@angular/forms';
+// prettier-ignore
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
