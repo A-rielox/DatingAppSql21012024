@@ -7,6 +7,7 @@ import { map, of, take } from 'rxjs';
 import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
+import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
 @Injectable({
    providedIn: 'root',
@@ -47,7 +48,7 @@ export class MembersService {
 
       if (response) return of(response);
 
-      let params = this.getPaginationHeaders(
+      let params = getPaginationHeaders(
          userParams.pageNumber,
          userParams.pageSize
       );
@@ -58,9 +59,10 @@ export class MembersService {
       params = params.append('orderBy', userParams.orderBy);
 
       // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
-      return this.getPaginatedResult<Member[]>(
+      return getPaginatedResult<Member[]>(
          this.baseUrl + 'users',
-         params
+         params,
+         this.http
       ).pipe(
          map((res) => {
             this.memberCache.set(Object.values(userParams).join('-'), res);
@@ -154,34 +156,34 @@ export class MembersService {
    //////////////////////////////////////////////
    //////////////////////////////////////////////
    //          PAGINACION
-   private getPaginationHeaders(pageNumber: number, pageSize: number) {
-      // p' poner query string parameters
-      let params = new HttpParams();
+   // private getPaginationHeaders(pageNumber: number, pageSize: number) {
+   //    // p' poner query string parameters
+   //    let params = new HttpParams();
 
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', pageSize);
+   //    params = params.append('pageNumber', pageNumber);
+   //    params = params.append('pageSize', pageSize);
 
-      return params;
-   }
+   //    return params;
+   // }
 
-   private getPaginatedResult<T>(url: string, params: HttpParams) {
-      const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
+   // private getPaginatedResult<T>(url: string, params: HttpParams) {
+   //    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
 
-      // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
-      return this.http.get<T>(url, { observe: 'response', params }).pipe(
-         map((res) => {
-            if (res.body) {
-               paginatedResult.result = res.body;
-            }
+   //    // { observe: 'response', params } pq me pase toda la respuesta y no solo el body
+   //    return this.http.get<T>(url, { observe: 'response', params }).pipe(
+   //       map((res) => {
+   //          if (res.body) {
+   //             paginatedResult.result = res.body;
+   //          }
 
-            const pagination = res.headers.get('Pagination');
+   //          const pagination = res.headers.get('Pagination');
 
-            if (pagination) {
-               paginatedResult.pagination = JSON.parse(pagination);
-            }
+   //          if (pagination) {
+   //             paginatedResult.pagination = JSON.parse(pagination);
+   //          }
 
-            return paginatedResult;
-         })
-      );
-   }
+   //          return paginatedResult;
+   //       })
+   //    );
+   // }
 }

@@ -6,6 +6,7 @@ using DatingAppSql21012024.Helpers;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Reflection;
 
 namespace DatingAppSql21012024.Data;
 
@@ -51,6 +52,11 @@ public class MessageRepository : IMessageRepository
                                     commandType: CommandType.StoredProcedure);
 
         return succes.FirstOrDefault() > 0 ? true : false;
+
+        // manda 0 si no existe msg,
+        // 1 si solo edita y no borra(si el mismo manda a borrar, el front no deja tambien va a mandar 1 )
+        // 2 si edita y borra
+        // null si se manda un user q no es ni el sender ni el recipient
     }
 
 
@@ -115,7 +121,7 @@ public class MessageRepository : IMessageRepository
                                      .FirstOrDefault().Url;
 
             m.RecipientPhotoUrl = photos.Where(p => p.AppUserId == m.RecipientId)
-                                     .FirstOrDefault().Url; ;
+                                     .FirstOrDefault().Url; // estoy mandando solo las main photo
         });
 
         return messagesDto.OrderBy(m => m.MessageSent);
