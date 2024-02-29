@@ -121,9 +121,9 @@ public class UserRepository : IUserRepository
 
             if (user is not null)
             {
-                if (user.Photos.Count > 0)
+                if (photos.Count > 0)
                 {
-                    user.Photos = lists.Read<Photo>().ToList();
+                    user.Photos = photos;
                 }
             }
         }
