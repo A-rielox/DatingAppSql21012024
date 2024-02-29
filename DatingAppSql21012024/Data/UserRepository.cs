@@ -110,12 +110,15 @@ public class UserRepository : IUserRepository
     public async Task<AppUser> GetUserByUserNameAsync(string userName)
     {
         AppUser user;
+        List<Photo> photos;
 
         using (var lists = await db.QueryMultipleAsync("sp_getUserByUserName",
                                     new { userName = userName },
                                     commandType: CommandType.StoredProcedure))
         {
             user = lists.Read<AppUser>().SingleOrDefault();
+            photos = lists.Read<Photo>().ToList();
+
             if (user is not null)
             {
                 if (user.Photos.Count > 0)

@@ -60,6 +60,7 @@ export class MemberDetailComponent implements OnInit {
       this.memberService.getMember(username).subscribe({
          next: (res) => {
             this.member = res;
+            console.log(this.member, 'mememem');
             this.getImages();
          },
       });
