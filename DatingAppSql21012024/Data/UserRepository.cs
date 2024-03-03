@@ -119,12 +119,12 @@ public class UserRepository : IUserRepository
             user = lists.Read<AppUser>().SingleOrDefault();
             photos = lists.Read<Photo>().ToList();
 
-            if (user is not null)
+            if (user is not null && photos.Count > 0)
             {
-                if (photos.Count > 0)
-                {
-                    user.Photos = photos;
-                }
+                //if (photos.Count > 0)
+                //{
+                user.Photos = photos;
+                //}
             }
         }
 

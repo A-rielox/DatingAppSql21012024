@@ -5,28 +5,28 @@ import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { TabDirective, TabsModule } from 'ngx-bootstrap/tabs';
 import { Member } from 'src/app/_models/member';
 import { MembersService } from 'src/app/_services/members.service';
+import { MemberMessagesComponent } from '../member-messages/member-messages.component';
+import { MessageService } from 'src/app/_services/message.service';
+import { Message } from 'src/app/_models/message';
 
 @Component({
    selector: 'app-member-detail',
    standalone: true,
    templateUrl: './member-detail.component.html',
    styleUrls: ['./member-detail.component.css'],
-   imports: [
-      CommonModule,
-      TabsModule,
-      GalleryModule /* MemberMessagesComponent */,
-   ],
+   imports: [CommonModule, TabsModule, GalleryModule, MemberMessagesComponent],
 })
 export class MemberDetailComponent implements OnInit {
    // @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent;
    // activeTab?: TabDirective;
    member: Member = {} as Member;
    images: GalleryItem[] = [];
-   // messages: Message[] = [];
+   messages: Message[] = [];
 
    constructor(
       private memberService: MembersService,
-      private route: ActivatedRoute // , private messageService: MessageService
+      private route: ActivatedRoute,
+      private messageService: MessageService
    ) {}
 
    //                                           ⚡⚡⚡
@@ -60,18 +60,21 @@ export class MemberDetailComponent implements OnInit {
       this.memberService.getMember(username).subscribe({
          next: (res) => {
             this.member = res;
-            console.log(this.member, 'mememem');
             this.getImages();
+
+            this.loadMessages(); // ----> aqui p' asegurarme dq ya tiene al member
          },
       });
    }
 
    loadMessages() {
-      // if (this.member) {
-      //    this.messageService.getMessageThread(this.member.userName).subscribe({
-      //       next: (messages) => (this.messages = messages),
-      //    });
-      // }
+      if (this.member) {
+         this.messageService.getMessageThread(this.member.userName).subscribe({
+            next: (messages) => {
+               this.messages = messages;
+            },
+         });
+      }
    }
 
    getImages() {

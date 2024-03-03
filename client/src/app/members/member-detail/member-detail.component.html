@@ -71,8 +71,11 @@
          </tab>
 
          <tab heading="Messages" (selectTab)="onTabActivated($event)">
-            <!-- <app-member-messages [messages]="messages" [username]="member.userName"></app-member-messages> -->
-            app-member-messages
+            <!--  [messages]="messages"  -->
+            <app-member-messages
+               [messages]="messages"
+               [username]="member.userName"
+            ></app-member-messages>
          </tab>
       </tabset>
    </div>
