@@ -1,4 +1,5 @@
-﻿using DatingAppSql21012024.Entities;
+﻿using Dapper;
+using DatingAppSql21012024.Entities;
 using DatingAppSql21012024.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
@@ -12,18 +13,18 @@ namespace DatingAppSql21012024.Services;
 public class TokenService : ITokenService
 {
     private readonly SymmetricSecurityKey _key;
-    //private IDbConnection db;
+    private IDbConnection db;
 
     public TokenService(IConfiguration config)
     {
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-        //this.db = new SqlConnection(config.GetConnectionString("DefaultConnection"));
+        this.db = new SqlConnection(config.GetConnectionString("DefaultConnection"));
     }
 
     ////////////////////////////////////////////////
     ///////////////////////////////////////////////////
     //
-    public string CreateToken(AppUser user)
+    public async Task<string> CreateToken(AppUser user)
     {
         var claims = new List<Claim>
         {
@@ -31,12 +32,12 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName), // user.FindFirst(ClaimTypes.Name)?.Value
         };
 
-        //var roles = await db.QueryAsync<string>("sp_getUserRolesName",
-        //                            new { userId = user.Id },
-        //                            commandType: CommandType.StoredProcedure);
+        var roles = await db.QueryAsync<string>("sp_getUserRolesName",
+                                    new { userId = user.Id },
+                                    commandType: CommandType.StoredProcedure);
 
-        //// roles viene como IEnumerable, asi que me añade la lista
-        //claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        // roles viene como IEnumerable, asi que me añade la lista
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         /* 
          p' admin        

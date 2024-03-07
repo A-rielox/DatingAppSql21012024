@@ -50,7 +50,7 @@ public class AccountController : BaseApiController
             UserName = user.UserName,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            Token = _tokenService.CreateToken(user)
+            Token = await _tokenService.CreateToken(user)
         };
 
         return Ok(userDto);
@@ -72,15 +72,13 @@ public class AccountController : BaseApiController
 
         if (!result) return Unauthorized("Invalid Password.");
 
-
-
         var userDto = new UserDto
         {
             UserName = user.UserName,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
             PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain == 1)?.Url,
-            Token = _tokenService.CreateToken(user)
+            Token = await _tokenService.CreateToken(user)
         };
 
         return Ok(userDto);
