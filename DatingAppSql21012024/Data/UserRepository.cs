@@ -25,30 +25,27 @@ public class UserRepository : IUserRepository
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     /// LA OCUPO EN AppUserStore
-    public async Task<int> CreateUser(AppUser usuario)  // CrearUsuario
-    {
-        var usuarioId = await db.QuerySingleAsync<int>(@"
-                                        INSERT INTO dbo.AppUsers 
-	                                        (
-		                                        userName, knownAs, gender, 
-		                                        dateOfBirth, city, country, 
-		                                        passwordHash, Email, NormalizedEmail
-	                                        )
-	                                        VALUES
-	                                        (
-		                                        @userName, @knownAs, @gender,
-		                                        @dateOfBirth, @city, @country,
-		                                        @passwordHash, @Email, @NormalizedEmail
-	                                        );
-                                        SELECT SCOPE_IDENTITY();
-                                        ", usuario);
+    public async Task<int> CreateUser(AppUser usuario)  // CrearUsuario / Register
+    {   
+        // creo user con sp y lo pongo con role 'Member'
+        var parameters = new DynamicParameters();
 
-        //await connection.ExecuteAsync("CrearDatosUsuarioNuevo"
-        //                                , new { usuarioId }
-        //                                , commandType: System.Data.CommandType.StoredProcedure
-        //                             );
+        parameters.Add("@userName", usuario.UserName);
+        parameters.Add("@knownAs", usuario.KnownAs);
+        parameters.Add("@gender", usuario.Gender);
+        parameters.Add("@dateOfBirth", usuario.DateOfBirth);
+        parameters.Add("@city", usuario.City);
+        parameters.Add("@country", usuario.Country);
+        parameters.Add("@passwordHash", usuario.PasswordHash);
 
-        return usuarioId;
+        parameters.Add("@email", usuario.UserName);
+        parameters.Add("@normalizedEmail", usuario.UserName.ToUpper());
+
+        // retorno el userId creado
+        var newUserId = await db.QueryAsync<int>("sp_createUser",
+                                               parameters,
+                                               commandType: CommandType.StoredProcedure);
+        return newUserId.FirstOrDefault();
     }
 
     ////////////////////////////////////////////////

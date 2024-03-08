@@ -41,10 +41,6 @@ public class AccountController : BaseApiController
 
         if (!result.Succeeded) return BadRequest(result.Errors);
 
-        //var roleResult = await _userManager.AddToRoleAsync(user, "Member");
-
-        //if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
-
         var userDto = new UserDto
         {
             UserName = user.UserName,

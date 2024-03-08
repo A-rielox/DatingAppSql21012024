@@ -27,10 +27,7 @@ public class AppUser
     // para llenar la lista de photos de un user que mando al front
     public List<Photo> Photos { get; set; } = new();
 
-    ////////////////////////////
-    //public List<AppUser> LikedByUsers { get; set; } // los q te dan like
-    //public List<AppUser> LikedUsers { get; set; } // a quienes les doy like
-
+    
     /*
     ////////////////////////////
     [Write(false)] // x register user ( cambiarlo a sp )
